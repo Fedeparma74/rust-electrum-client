@@ -969,6 +969,25 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
             .collect()
     }
 
+    fn transaction_get_height(&self, txid: &Txid) -> Result<Option<usize>, Error> {
+        let params = vec![Param::String(txid.to_hex())];
+        let req = Request::new_id(
+            self.last_id.fetch_add(1, Ordering::SeqCst),
+            "blockchain.transaction.get_height",
+            params,
+        );
+        let result = self.call(req)?;
+
+        Ok(result.as_u64().map(|h| h as usize))
+    }
+
+    fn batch_transaction_get_height<'t, I>(&self, txids: I) -> Result<Vec<Option<usize>>, Error>
+    where
+        I: IntoIterator<Item = &'t Txid> + Clone,
+    {
+        impl_batch_call!(self, txids, transaction_get_height)
+    }
+
     fn batch_block_header_raw<'s, I>(&self, heights: I) -> Result<Vec<Vec<u8>>, Error>
     where
         I: IntoIterator<Item = u32> + Clone,
@@ -1250,6 +1269,42 @@ mod test {
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ]
         )
+    }
+
+    #[test]
+    fn test_transaction_get_height() {
+        use bitcoin::hashes::hex::FromHex;
+        use bitcoin::Txid;
+
+        let client = RawClient::new(get_test_server(), None).unwrap();
+
+        let resp = client
+            .transaction_get_height(
+                &Txid::from_hex("cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566")
+                    .unwrap(),
+            )
+            .unwrap();
+        assert_eq!(resp, Some(630000));
+    }
+
+    #[test]
+    fn test_batch_transaction_get_height() {
+        use bitcoin::hashes::hex::FromHex;
+        use bitcoin::Txid;
+
+        let client = RawClient::new(get_test_server(), None).unwrap();
+
+        let resp = client
+            .batch_transaction_get_height(vec![
+                &Txid::from_hex("cc2ca076fd04c2aeed6d02151c447ced3d09be6fb4d4ef36cb5ed4e7a3260566")
+                    .unwrap(),
+                &Txid::from_hex("e67a0550848b7932d7796aeea16ab0e48a5cfe81c4e8cca2c5b03e0416850114")
+                    .unwrap(),
+            ])
+            .unwrap();
+        assert_eq!(resp.len(), 2);
+        assert_eq!(resp[0], Some(630000));
+        assert_eq!(resp[1], Some(111194));
     }
 
     #[test]

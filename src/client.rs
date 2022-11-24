@@ -288,6 +288,19 @@ impl ElectrumApi for Client {
     }
 
     #[inline]
+    fn transaction_get_height(&self, txid: &Txid) -> Result<Option<usize>, Error> {
+        impl_inner_call!(self, transaction_get_height, txid)
+    }
+
+    #[inline]
+    fn batch_transaction_get_height<'t, I>(&self, txids: I) -> Result<Vec<Option<usize>>, Error>
+    where
+        I: IntoIterator<Item = &'t Txid> + Clone,
+    {
+        impl_inner_call!(self, batch_transaction_get_height, txids.clone())
+    }
+
+    #[inline]
     fn batch_block_header_raw<'s, I>(&self, heights: I) -> Result<Vec<Vec<u8>>, Error>
     where
         I: IntoIterator<Item = u32> + Clone,

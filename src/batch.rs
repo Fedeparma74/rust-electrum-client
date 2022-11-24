@@ -50,6 +50,13 @@ impl Batch {
             .push((String::from("blockchain.transaction.get"), params));
     }
 
+    /// Add one `blockchain.transaction.get_height` request to the batch queue
+    pub fn transaction_get_height(&mut self, tx_hash: &Txid) {
+        let params = vec![Param::String(tx_hash.to_hex())];
+        self.calls
+            .push((String::from("blockchain.transaction.get_height"), params));
+    }
+
     /// Add one `blockchain.estimatefee` request to the batch queue
     pub fn estimate_fee(&mut self, number: usize) {
         let params = vec![Param::Usize(number)];
