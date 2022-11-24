@@ -46,6 +46,16 @@ pub trait ElectrumApi {
             .collect()
     }
 
+    /// Gets the block height where the transaction with `txid` has been confirmed.
+    fn transaction_get_height(&self, txid: &Txid) -> Result<Option<usize>, Error>;
+
+    /// Batch version of [`transaction_get_height`](#method.transaction_get_height).
+    ///
+    /// Takes a list of `txids` and returns a list of heights.
+    fn batch_transaction_get_height<'t, I>(&self, txids: I) -> Result<Vec<Option<usize>>, Error>
+    where
+        I: IntoIterator<Item = &'t Txid> + Clone;
+
     /// Batch version of [`block_header`](#method.block_header).
     ///
     /// Takes a list of `heights` of blocks and returns a list of headers.
