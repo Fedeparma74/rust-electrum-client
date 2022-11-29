@@ -31,11 +31,11 @@ use rustls::{
 #[cfg(any(feature = "default", feature = "proxy"))]
 use crate::socks::{Socks5Stream, TargetAddr, ToTargetAddr};
 
-use stream::ClonableStream;
+use crate::stream::ClonableStream;
 
-use api::ElectrumApi;
-use batch::Batch;
-use types::*;
+use crate::api::ElectrumApi;
+use crate::batch::Batch;
+use crate::types::*;
 
 macro_rules! impl_batch_call {
     ( $self:expr, $data:expr, $call:ident ) => {{
@@ -1062,7 +1062,7 @@ impl<T: Read + Write> ElectrumApi for RawClient<T> {
 #[cfg(test)]
 mod test {
     use super::RawClient;
-    use api::ElectrumApi;
+    use crate::api::ElectrumApi;
 
     fn get_test_server() -> String {
         std::env::var("TEST_ELECTRUM_SERVER").unwrap_or("electrum.blockstream.info:50001".into())
@@ -1370,7 +1370,7 @@ mod test {
 
     #[test]
     fn test_raw_call() {
-        use types::Param;
+        use crate::types::Param;
 
         let client = RawClient::new(get_test_server(), None).unwrap();
 

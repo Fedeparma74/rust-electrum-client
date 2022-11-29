@@ -63,12 +63,12 @@ pub mod raw_client;
 mod stream;
 mod types;
 
-pub use api::ElectrumApi;
-pub use batch::Batch;
+pub use crate::api::ElectrumApi;
+pub use crate::batch::Batch;
 #[cfg(any(
     all(feature = "proxy", feature = "use-openssl"),
     all(feature = "proxy", feature = "use-rustls")
 ))]
-pub use client::*;
-pub use config::{Config, ConfigBuilder, Socks5Config};
-pub use types::*;
+pub use crate::client::*;
+pub use crate::config::{Config, ConfigBuilder, Socks5Config};
+pub use crate::types::*;
