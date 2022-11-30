@@ -49,8 +49,10 @@ extern crate winapi;
 pub mod socks;
 
 mod api;
+mod async_api;
 mod batch;
 
+pub mod async_client;
 #[cfg(any(
     all(feature = "proxy", feature = "use-openssl"),
     all(feature = "proxy", feature = "use-rustls")
@@ -59,11 +61,13 @@ pub mod client;
 
 mod config;
 
+pub mod async_raw_client;
 pub mod raw_client;
 mod stream;
 mod types;
 
 pub use crate::api::ElectrumApi;
+pub use crate::async_client::*;
 pub use crate::batch::Batch;
 #[cfg(any(
     all(feature = "proxy", feature = "use-openssl"),

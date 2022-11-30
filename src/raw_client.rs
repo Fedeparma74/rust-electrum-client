@@ -41,7 +41,7 @@ macro_rules! impl_batch_call {
     ( $self:expr, $data:expr, $call:ident ) => {{
         let mut batch = Batch::default();
         for i in $data {
-            batch.$call(i);
+            batch.$call(&i);
         }
 
         let resp = $self.batch_call(&batch)?;
@@ -347,8 +347,6 @@ impl RawClient<ElectrumSslStream> {
         validate_domain: bool,
         tcp_stream: TcpStream,
     ) -> Result<Self, Error> {
-        use std::convert::TryFrom;
-
         let builder = ClientConfig::builder().with_safe_defaults();
 
         let config = if validate_domain {
