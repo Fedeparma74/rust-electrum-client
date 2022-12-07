@@ -51,10 +51,6 @@ pub mod socks;
 mod api;
 mod batch;
 
-#[cfg(any(
-    all(feature = "proxy", feature = "use-openssl"),
-    all(feature = "proxy", feature = "use-rustls")
-))]
 pub mod client;
 
 mod config;
@@ -65,10 +61,6 @@ mod types;
 
 pub use crate::api::ElectrumApi;
 pub use crate::batch::Batch;
-#[cfg(any(
-    all(feature = "proxy", feature = "use-openssl"),
-    all(feature = "proxy", feature = "use-rustls")
-))]
 pub use crate::client::*;
 pub use crate::config::{Config, ConfigBuilder, Socks5Config};
 pub use crate::types::*;
